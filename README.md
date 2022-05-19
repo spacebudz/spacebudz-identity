@@ -50,12 +50,15 @@ This will generate the serialized scripts under `./onchain/scripts.json`
 
 
 ### Schema
+
+All keys are optional
+
 ```json
 {
-    "nickname"?: "string",
-    "urbit"?: ["urbit_id"],
-    "discord"?: ["username"],
-    "email"?: ["email_address"],
-    "color"?: "string hex color"
+    "nickname": "string",
+    "urbit": ["urbit_id"],
+    "discord": ["username"],
+    "email": ["email_address"],
+    "color": "string hex color"
 }
 ```
