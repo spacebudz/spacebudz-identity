@@ -1,0 +1,44 @@
+{
+  "version": "0.1.0",
+  "license": "MIT",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "onchain",
+    "offchain"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "npm run build && node dist/spacebudz-identity.esm.js",
+    "build": "tsdx build --format esm --entry offchain/index.ts",
+    "lint": "tsdx lint offchain",
+    "build:contract": "cd onchain && cabal run contract"
+  },
+  "peerDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "spacebudz-identity",
+  "author": "berry_ales",
+  "module": "dist/spacebudz-identity.esm.js",
+  "devDependencies": {
+    "husky": "^8.0.1",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "lucid-cardano": "^0.2.7"
+  }
+}
