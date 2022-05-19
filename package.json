@@ -15,7 +15,8 @@
     "start": "npm run build && node dist/spacebudz-identity.esm.js",
     "build": "tsdx build --format esm --entry offchain/index.ts",
     "lint": "tsdx lint offchain",
-    "build:contract": "cd onchain && cabal run contract"
+    "build:contract": "cd onchain && cabal run contract",
+    "release": "npm run build && npm run lint && npm publish --access public"
   },
   "peerDependencies": {},
   "husky": {
@@ -29,7 +30,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "spacebudz-identity",
+  "name": "@spacebudz/spacebudz-identity",
   "author": "berry_ales",
   "module": "dist/spacebudz-identity.esm.js",
   "devDependencies": {
