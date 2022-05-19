@@ -47,3 +47,15 @@ npm run build
 npm run build:contract
 ```
 This will generate the serialized scripts under `./onchain/scripts.json`
+
+
+### Schema
+```json
+{
+    "nickname"?: "string",
+    "urbit"?: ["urbit_id"],
+    "discord"?: ["username"],
+    "email"?: ["email_address"],
+    "color"?: "string hex color"
+}
+```
