@@ -65,7 +65,7 @@ export const deploy = async (): Promise<TxHash> => {
   const tx = await Tx.new();
 
   for (let i = 0; i < 10000; i += 100) {
-    const unit = controlPolicyId + assetName(i);
+    const unit = controlPolicyId() + assetName(i);
     tx.mintAssets({ [unit]: 1n }, Data.empty());
     tx.payToContract(controlAddress(), Data.to(new Map()), {
       [unit]: 1n,
@@ -92,10 +92,10 @@ export const updateIdentity = async (
     assetName(contractDetails.ownershipPrefix + identityId);
 
   const controlId = Math.floor(identityId / 100) * 100;
-  const controlUnit = controlPolicyId + assetName(controlId);
+  const controlUnit = controlPolicyId() + assetName(controlId);
 
   const identityUnit =
-    identityPolicyId + assetName(contractDetails.identityPrefix + identityId);
+    identityPolicyId() + assetName(contractDetails.identityPrefix + identityId);
 
   const [controlUtxo] = await Lucid.utxosAtWithUnit(
     controlAddress(),
@@ -167,7 +167,7 @@ export const getIdentity = async (
   identityId: number
 ): Promise<any | undefined> => {
   const identityUnit =
-    identityPolicyId + assetName(contractDetails.identityPrefix + identityId);
+    identityPolicyId() + assetName(contractDetails.identityPrefix + identityId);
   const txHash = await fetch(
     `https://cardano-${
       Lucid.network === 'Mainnet' ? 'mainnet' : 'testnet'

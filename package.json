@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "typings": "dist/index.d.ts",
   "files": [
@@ -14,7 +14,7 @@
   "scripts": {
     "start": "npm run build && node dist/spacebudz-identity.esm.js",
     "build": "tsdx build --format esm",
-    "lint": "tsdx lint src",
+    "lint": "tsdx lint src/offchain",
     "build:contract": "cd src/onchain && cabal run contract",
     "release": "npm run build && npm run lint && npm publish --access public"
   },
