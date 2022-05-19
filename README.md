@@ -8,7 +8,7 @@
 ```js
 import {Lucid, Blockfrost, updateIdentity, getIdentity} from "@spacebudz/spacebudz-identity"
 
-await Lucid.initialize(new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", <projectId>));
+await Lucid.initialize(new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", projectId));
 
 await Lucid.selectWallet("nami");
 
