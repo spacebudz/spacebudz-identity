@@ -62,3 +62,7 @@ All keys are optional
     "color": "string hex color"
 }
 ```
+
+### Contract architecture
+
+TODO
