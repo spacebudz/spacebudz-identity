@@ -1,4 +1,4 @@
-## <span style="color:#8064F4">How SpaceBudz Identity works</span>
+<h2><span style="color:#8064F4">How SpaceBudz Identity works</span></h2>
 
 SpaceBudz Identity consists in total of **four** plutus scripts:
 
