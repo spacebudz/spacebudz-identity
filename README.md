@@ -48,6 +48,10 @@ npm run build:contract
 ```
 This will generate the serialized scripts under `./onchain/scripts.json`
 
+### Identity Policy Id
+
+
+`e47f849c5262b93b46789251519ec0a7921087b84b3782b871497e8f`
 
 ### Schema
 
@@ -57,6 +61,7 @@ All keys are optional
 {
     "nickname": "string",
     "urbit": ["urbit_id"],
+    "twitter": ["@profile"],
     "discord": ["username"],
     "email": ["email_address"],
     "color": "string hex color"
