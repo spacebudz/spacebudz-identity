@@ -1,12 +1,27 @@
 <p align="center">
   <img width="100px" src="https://github.com/SpaceBudz/spacebudz/raw/main/src/images/brand/logo.png" align="center" alt="GitHub Readme Stats" />
   <h1 align="center">SpaceBudz Identity</h1>
-  <p align="center">Personalize your SpaceBud and give it an identity.</p>
+  <p align="center">Personalize your SpaceBudz and give it an identity.</p>
+
+  <p align="center">
+    <img src="https://img.shields.io/github/commit-activity/m/SpaceBudz/spacebudz-identity?style=for-the-badge" />
+    <a href="https://www.npmjs.com/package/@spacebudz/spacebudz-identity">
+      <img src="https://img.shields.io/npm/v/@spacebudz/spacebudz-identity?style=for-the-badge" />
+    </a>
+    <a href="https://www.npmjs.com/package/lucid-cardano">
+      <img src="https://img.shields.io/npm/dw/lucid-cardano?style=for-the-badge" />
+    </a>
+    <img src="https://img.shields.io/npm/l/@spacebudz/spacebudz-identity?style=for-the-badge" />
+    <a href="https://twitter.com/spacebudzNFT">
+      <img src="https://img.shields.io/twitter/follow/spacebudzNFT?style=for-the-badge&logo=twitter" />
+    </a>
+  </p>
+
 </p>
 
 ### Validity
 
-The policy id for identity tokens:
+The policy id for the identity tokens:
 
 `e47f849c5262b93b46789251519ec0a7921087b84b3782b871497e8f`
 
