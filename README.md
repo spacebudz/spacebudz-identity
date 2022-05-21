@@ -71,6 +71,8 @@ npm run build:contract
 ```
 This will generate the serialized scripts under `./src/onchain/scripts.json`
 
+[How the contract works](./docs/README.md)
+
 ### Schema
 
 All keys are optional
@@ -85,5 +87,3 @@ All keys are optional
     "color": "string hex color"
 }
 ```
-
-### [How the contract works](./docs/README.md)
