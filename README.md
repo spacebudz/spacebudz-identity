@@ -86,6 +86,4 @@ All keys are optional
 }
 ```
 
-### Contract architecture
-
-TODO
+### [How the contract works](./docs/README.md)
