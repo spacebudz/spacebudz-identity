@@ -49,7 +49,7 @@ npm run build
 ```
 npm run build:contract
 ```
-This will generate the serialized scripts under `./onchain/scripts.json`
+This will generate the serialized scripts under `./src/onchain/scripts.json`
 
 ### Schema
 
