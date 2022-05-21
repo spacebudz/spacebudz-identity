@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="100px" src="https://github.com/SpaceBudz/spacebudz/raw/main/src/images/brand/logo.png" align="center" alt="GitHub Readme Stats" />
+  <img width="100px" src="https://github.com/SpaceBudz/spacebudz/raw/main/src/images/brand/logo.png" align="center" />
   <h1 align="center">SpaceBudz Identity</h1>
   <p align="center">Personalize your SpaceBudz and give it an identity.</p>
 
