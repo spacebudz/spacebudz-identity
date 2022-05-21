@@ -1,29 +1,50 @@
 name: CI
-on: [push]
+on:
+  workflow_dispatch: #Can be triggered from the UI
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-  build:
+  build-offchain:
     name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['10.x', '12.x', '14.x']
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        node: ['12.x', '17.x']
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
 
       - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
+          cache: npm
 
-      - name: Install deps and build (with cache)
-        uses: bahmutov/npm-install@v1
+      - name: Install dependencies (CI)
+        run: npm ci
 
       - name: Lint
-        run: yarn lint
+        run: npm run lint
 
       - name: Build
-        run: yarn build
+        run: npm run build
+  # build-onchain:
+  #   name: Build Haskell Project
+  #   runs-on: ubuntu-latest
+  #   container: haskell:8.10.7
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@master
+  #     - name: Install deps
+  #       run: apt-get update && apt-get install -y pkg-config libsodium-dev
+  #     - name: Build Contracts
+  #       run: cabal update && cabal build contract
+  #       working-directory: src/onchain
