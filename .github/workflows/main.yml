@@ -36,18 +36,15 @@ jobs:
 
       - name: Build
         run: npm run build
-
-  build-onchain:
-    name: Build Haskell Project
-    runs-on: ubuntu-latest
-    container: haskell:8.10.7
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@master
-
-      - name: Install deps
-        run: apt-get update && apt-get install -y pkg-config libsodium-dev
-
-      - name: Build Contracts
-        run: cabal update && cabal build contract
-        working-directory: src/onchain
+  # build-onchain:
+  #   name: Build Haskell Project
+  #   runs-on: ubuntu-latest
+  #   container: haskell:8.10.7
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@master
+  #     - name: Install deps
+  #       run: apt-get update && apt-get install -y pkg-config libsodium-dev
+  #     - name: Build Contracts
+  #       run: cabal update && cabal build contract
+  #       working-directory: src/onchain
