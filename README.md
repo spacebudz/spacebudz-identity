@@ -1,12 +1,13 @@
 <p align="center">
   <img width="100px" src="https://github.com/SpaceBudz/spacebudz/raw/main/src/images/brand/logo.png" align="center" alt="GitHub Readme Stats" />
   <h1 align="center">SpaceBudz Identity</h1>
-  <p align="center">.</p>
+  <p align="center">Personalize your SpaceBud and give it an identity.</p>
 </p>
 
 ### Validity
 
 The policy id for identity tokens:
+
 `e47f849c5262b93b46789251519ec0a7921087b84b3782b871497e8f`
 
 
