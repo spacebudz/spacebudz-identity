@@ -8,8 +8,8 @@
     <a href="https://www.npmjs.com/package/@spacebudz/spacebudz-identity">
       <img src="https://img.shields.io/npm/v/@spacebudz/spacebudz-identity?style=for-the-badge" />
     </a>
-    <a href="https://www.npmjs.com/package/lucid-cardano">
-      <img src="https://img.shields.io/npm/dw/lucid-cardano?style=for-the-badge" />
+    <a href="https://www.npmjs.com/package/@spacebudz/spacebudz-identity">
+      <img src="https://img.shields.io/npm/dw/@spacebudz/spacebudz-identity?style=for-the-badge" />
     </a>
     <img src="https://img.shields.io/npm/l/@spacebudz/spacebudz-identity?style=for-the-badge" />
     <a href="https://twitter.com/spacebudzNFT">
