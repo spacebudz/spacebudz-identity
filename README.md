@@ -65,6 +65,7 @@ npm run build
 
 - ghc >= 8.10.7
 - cabal >= 3.0
+- Install [custom libsodium](https://developers.cardano.org/docs/get-started/installing-cardano-node/#downloading--compiling)
 
 ```
 npm run build:contract
