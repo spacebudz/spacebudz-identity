@@ -1,12 +1,18 @@
-name: CI
+name: Off-Chain CI
 on:
   workflow_dispatch: #Can be triggered from the UI
   push:
     branches:
       - main
+    paths:
+      - 'src/offchain/**'
+      - '.github/workflows/off-chain.yml'
   pull_request:
     branches:
       - main
+    paths:
+      - 'src/offchain/**'
+      - '.github/workflows/off-chain.yml'
 
 jobs:
   build-offchain:
@@ -16,7 +22,7 @@ jobs:
     strategy:
       matrix:
         node: ['12.x', '17.x']
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - name: Checkout repo
@@ -36,15 +42,3 @@ jobs:
 
       - name: Build
         run: npm run build
-  # build-onchain:
-  #   name: Build Haskell Project
-  #   runs-on: ubuntu-latest
-  #   container: haskell:8.10.7
-  #   steps:
-  #     - name: Checkout repo
-  #       uses: actions/checkout@master
-  #     - name: Install deps
-  #       run: apt-get update && apt-get install -y pkg-config libsodium-dev
-  #     - name: Build Contracts
-  #       run: cabal update && cabal build contract
-  #       working-directory: src/onchain
