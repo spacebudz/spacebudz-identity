@@ -36,7 +36,7 @@ await Lucid.initialize(new Blockfrost("https://cardano-mainnet.blockfrost.io/api
 await Lucid.selectWallet("nami");
 
 // Update the identity for SpaceBud #995
-const txHash = updateIdentity(995, {nickname: "Berry"});
+const txHash = await updateIdentity(995, {nickname: "Berry"});
 
 await Lucid.awaitTx(txHash);
 
