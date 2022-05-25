@@ -125,9 +125,9 @@ export const updateIdentity = async (
       .collectFrom([ownershipUtxo])
       .collectFrom([gateUtxo], Data.empty())
       .payToContract(gateAddress(), Data.empty(), { [identityUnit]: 1n })
-      .attachMetadata(537, {
-        [identityPolicyId()]: {
-          [assetName(contractDetails.identityPrefix + identityId)]: {
+      .attachMetadataWithConversion(537, {
+        ['0x' + identityPolicyId()]: {
+          ['0x' + assetName(contractDetails.identityPrefix + identityId)]: {
             ...metadata,
           },
         },
@@ -148,9 +148,9 @@ export const updateIdentity = async (
       .mintAssets({ [identityUnit]: 1n }, Data.empty())
       .payToContract(controlAddress(), Data.to(updatedMap), controlUtxo.assets)
       .payToContract(gateAddress(), Data.empty(), { [identityUnit]: 1n })
-      .attachMetadata(537, {
-        [identityPolicyId()]: {
-          [assetName(contractDetails.identityPrefix + identityId)]: {
+      .attachMetadataWithConversion(537, {
+        ['0x' + identityPolicyId()]: {
+          ['0x' + assetName(contractDetails.identityPrefix + identityId)]: {
             ...metadata,
           },
         },
@@ -190,9 +190,14 @@ export const getIdentity = async (
 
   if (!metadata) return undefined;
 
-  return metadata?.[identityPolicyId()]?.[
-    assetName(contractDetails.identityPrefix + identityId)
-  ];
+  return (
+    metadata?.[identityPolicyId()]?.[
+      assetName(contractDetails.identityPrefix + identityId)
+    ] ||
+    metadata?.['0x' + identityPolicyId()]?.[
+      '0x' + assetName(contractDetails.identityPrefix + identityId)
+    ]
+  );
 };
 
 export * from 'lucid-cardano';
