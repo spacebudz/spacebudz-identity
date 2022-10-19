@@ -188,7 +188,7 @@ export class Contract {
       `https://cardano-${
         this.lucid.network === "Mainnet" ? "mainnet" : "testnet"
       }.blockfrost.io/api/v0/assets/${identityUnit}/transactions?order=desc&count=1`,
-      { headers: { project_id: (this.lucid.provider as any).projectId } },
+      { headers: { project_id: (this.lucid.provider as any).data.projectId } },
     )
       .then((res) => res.json())
       .then((res) => res[0]?.tx_hash);
@@ -198,7 +198,7 @@ export class Contract {
       `https://cardano-${
         this.lucid.network === "Mainnet" ? "mainnet" : "testnet"
       }.blockfrost.io/api/v0/txs/${txHash}/metadata`,
-      { headers: { project_id: (this.lucid.provider as any).projectId } },
+      { headers: { project_id: (this.lucid.provider as any).data.projectId } },
     ).then((res) => res.json());
 
     const metadata = (txMetadata || []).find((m: any) => m.label == 537)
