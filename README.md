@@ -29,18 +29,20 @@ The policy id for the identity tokens:
 ### Usage
 
 ```js
-import {Lucid, Blockfrost, updateIdentity, getIdentity} from "@spacebudz/spacebudz-identity"
+import Identity from "@spacebudz/spacebudz-identity"
 
-await Lucid.initialize(new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", projectId));
+const lucid = await Identity.Lucid.new(new Identity.Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", projectId));
+const api = await window.cardano.nami.enable();
+lucid.selectWallet(api);
 
-await Lucid.selectWallet("nami");
+const contract = new Identity.Contract(lucid);
 
 // Update the identity for SpaceBud #995
-const txHash = await updateIdentity(995, {nickname: "Berry"});
+const txHash = await contract.updateIdentity(995, {nickname: "Berry"});
 
-await Lucid.awaitTx(txHash);
+await lucid.awaitTx(txHash);
 
-const identity = await getIdentity(995);
+const identity = await contract.getIdentity(995);
 console.log(identity);
 ```
 

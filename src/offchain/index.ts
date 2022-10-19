@@ -1,16 +1,13 @@
 import {
-  Construct,
+  Address,
+  Constr,
   Data,
   Lucid,
-  Tx,
+  PolicyId,
   TxHash,
-  validatorToAddress,
-  validatorToScriptHash,
-} from 'lucid-cardano';
-import scripts from '../onchain/scripts.json';
-
-const assetName = (utf8: string | number) =>
-  Buffer.from(utf8.toString()).toString('hex');
+  utf8ToHex,
+} from "lucid-cardano";
+import scripts from "../onchain/scripts.json";
 
 const {
   gateValidator,
@@ -20,184 +17,204 @@ const {
 } = scripts;
 
 const contractDetails = {
-  ownershipPrefix: 'SpaceBud',
-  ownershipCs: 'd5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc',
+  ownershipPrefix: "SpaceBud",
+  ownershipCs: "d5e6bf0500378d4f0da4e8dde6becec7621cd8cbf5cbb9b87013d4cc",
   oref: {
-    txHash: 'b26a00bc3e795092f08ffeda4e8d74ae64a9f0690c7edbdc049f7beed4f54046',
+    txHash: "b26a00bc3e795092f08ffeda4e8d74ae64a9f0690c7edbdc049f7beed4f54046",
     outputIndex: 2,
   },
-  identityPrefix: 'Identity',
+  identityPrefix: "Identity",
 };
 
-const gateAddress = () =>
-  validatorToAddress({
-    type: 'PlutusV1',
-    script: gateValidator,
-  });
+export class Contract {
+  private lucid!: Lucid;
 
-const controlAddress = () =>
-  validatorToAddress({
-    type: 'PlutusV1',
-    script: controlValidator,
-  });
+  constructor(lucid: Lucid) {
+    this.lucid = lucid;
+  }
 
-const controlPolicyId = () =>
-  validatorToScriptHash({
-    type: 'PlutusV1',
-    script: controlPolicy,
-  });
-
-const identityPolicyId = () =>
-  validatorToScriptHash({
-    type: 'PlutusV1',
-    script: identityPolicy,
-  });
-
-export const deploy = async (): Promise<TxHash> => {
-  const utxos = await Lucid.wallet.getUtxos();
-  const utxo = utxos.find(
-    utxo =>
-      utxo.txHash === contractDetails.oref.txHash &&
-      utxo.outputIndex === contractDetails.oref.outputIndex
-  );
-  if (!utxo) throw new Error('Utxo is required to deploy contract');
-
-  const tx = await Tx.new();
-
-  for (let i = 0; i < 10000; i += 100) {
-    const unit = controlPolicyId() + assetName(i);
-    tx.mintAssets({ [unit]: 1n }, Data.empty());
-    tx.payToContract(controlAddress(), Data.to(new Map()), {
-      [unit]: 1n,
+  private gateAddress(): Address {
+    return this.lucid.utils.validatorToAddress({
+      type: "PlutusV1",
+      script: gateValidator,
     });
   }
 
-  const txComplete = await tx
-    .collectFrom([utxo])
-    .attachMintingPolicy({ type: 'PlutusV1', script: controlPolicy })
-    .complete();
+  private controlAddress(): Address {
+    return this.lucid.utils.validatorToAddress({
+      type: "PlutusV1",
+      script: controlValidator,
+    });
+  }
 
-  const signedTx = await txComplete.sign().complete();
+  private controlPolicyId(): PolicyId {
+    return this.lucid.utils.validatorToScriptHash({
+      type: "PlutusV1",
+      script: controlPolicy,
+    });
+  }
 
-  const txHash = await signedTx.submit();
-  return txHash;
-};
+  private identityPolicyId(): PolicyId {
+    return this.lucid.utils.validatorToScriptHash({
+      type: "PlutusV1",
+      script: identityPolicy,
+    });
+  }
 
-export const updateIdentity = async (
-  identityId: number,
-  metadata: any
-): Promise<TxHash> => {
-  const ownershipUnit =
-    contractDetails.ownershipCs +
-    assetName(contractDetails.ownershipPrefix + identityId);
+  async deploy(): Promise<TxHash> {
+    const utxos = await this.lucid.wallet.getUtxos();
+    const utxo = utxos.find(
+      (utxo) =>
+        utxo.txHash === contractDetails.oref.txHash &&
+        utxo.outputIndex === contractDetails.oref.outputIndex,
+    );
+    if (!utxo) throw new Error("Utxo is required to deploy contract");
 
-  const controlId = Math.floor(identityId / 100) * 100;
-  const controlUnit = controlPolicyId() + assetName(controlId);
+    const tx = this.lucid.newTx();
 
-  const identityUnit =
-    identityPolicyId() + assetName(contractDetails.identityPrefix + identityId);
+    for (let i = 0; i < 10000; i += 100) {
+      const unit = this.controlPolicyId() + utf8ToHex(i.toString());
+      tx.mintAssets({ [unit]: 1n }, Data.empty());
+      tx.payToContract(this.controlAddress(), Data.to(new Map()), {
+        [unit]: 1n,
+      });
+    }
 
-  const [controlUtxo] = await Lucid.utxosAtWithUnit(
-    controlAddress(),
-    controlUnit
-  );
+    const txComplete = await tx
+      .collectFrom([utxo])
+      .attachMintingPolicy({ type: "PlutusV1", script: controlPolicy })
+      .complete();
 
-  const ownershipUtxo = (await Lucid.wallet.getUtxos()).find(utxo =>
-    Object.keys(utxo.assets).includes(ownershipUnit)
-  );
+    const signedTx = await txComplete.sign().complete();
 
-  if (!ownershipUtxo)
-    throw new Error(
-      'You are not the holder of ' +
-        contractDetails.ownershipPrefix +
-        ' #' +
-        identityId
+    const txHash = await signedTx.submit();
+    return txHash;
+  }
+
+  async updateIdentity(identityId: number, metadata: any): Promise<TxHash> {
+    const ownershipUnit = contractDetails.ownershipCs +
+      utf8ToHex(contractDetails.ownershipPrefix + identityId);
+
+    const controlId = Math.floor(identityId / 100) * 100;
+    const controlUnit = this.controlPolicyId() +
+      utf8ToHex(controlId.toString());
+
+    const identityUnit = this.identityPolicyId() +
+      utf8ToHex(contractDetails.identityPrefix + identityId);
+
+    const [controlUtxo] = await this.lucid.utxosAtWithUnit(
+      this.controlAddress(),
+      controlUnit,
     );
 
-  const controlMap: Map<BigInt, BigInt> = Data.from(
-    await Lucid.datumOf(controlUtxo)
-  );
+    const ownershipUtxo = (await this.lucid.wallet.getUtxos()).find((utxo) =>
+      Object.keys(utxo.assets).includes(ownershipUnit)
+    );
 
-  if (controlMap.has(BigInt(identityId))) {
-    /** Identity token already exists; just move token inside the gate address */
-    const [gateUtxo] = await Lucid.utxosAtWithUnit(gateAddress(), identityUnit);
-    const tx = await Tx.new()
-      .collectFrom([ownershipUtxo])
-      .collectFrom([gateUtxo], Data.empty())
-      .payToContract(gateAddress(), Data.empty(), { [identityUnit]: 1n })
-      .attachMetadataWithConversion(537, {
-        ['0x' + identityPolicyId()]: {
-          ['0x' + assetName(contractDetails.identityPrefix + identityId)]: {
-            ...metadata,
+    if (!ownershipUtxo) {
+      throw new Error(
+        "You are not the holder of " +
+          contractDetails.ownershipPrefix +
+          " #" +
+          identityId,
+      );
+    }
+
+    const controlMap = Data.from(
+      await this.lucid.datumOf(controlUtxo),
+    ) as Map<bigint, bigint>;
+
+    if (controlMap.has(BigInt(identityId))) {
+      /** Identity token already exists; just move token inside the gate address */
+      const [gateUtxo] = await this.lucid.utxosAtWithUnit(
+        this.gateAddress(),
+        identityUnit,
+      );
+      const tx = await this.lucid
+        .newTx()
+        .collectFrom([ownershipUtxo])
+        .collectFrom([gateUtxo], Data.empty())
+        .payToContract(this.gateAddress(), Data.empty(), { [identityUnit]: 1n })
+        .attachMetadataWithConversion(537, {
+          ["0x" + this.identityPolicyId()]: {
+            ["0x" + utf8ToHex(contractDetails.identityPrefix + identityId)]: {
+              ...metadata,
+            },
           },
-        },
-      })
-      .attachSpendingValidator({ type: 'PlutusV1', script: gateValidator })
-      .complete();
-    const signedTx = await tx.sign().complete();
-    return await signedTx.submit();
-  } else {
-    /** Mint the identity token first */
-    const updatedMap = controlMap.set(BigInt(identityId), 1n);
-    const tx = await Tx.new()
-      .collectFrom([ownershipUtxo])
-      .collectFrom(
-        [controlUtxo],
-        Data.to(new Construct(0, [controlId, identityId]))
-      )
-      .mintAssets({ [identityUnit]: 1n }, Data.empty())
-      .payToContract(controlAddress(), Data.to(updatedMap), controlUtxo.assets)
-      .payToContract(gateAddress(), Data.empty(), { [identityUnit]: 1n })
-      .attachMetadataWithConversion(537, {
-        ['0x' + identityPolicyId()]: {
-          ['0x' + assetName(contractDetails.identityPrefix + identityId)]: {
-            ...metadata,
+        })
+        .attachSpendingValidator({ type: "PlutusV1", script: gateValidator })
+        .complete();
+      const signedTx = await tx.sign().complete();
+      return await signedTx.submit();
+    } else {
+      /** Mint the identity token first */
+      const updatedMap = controlMap.set(
+        BigInt(identityId),
+        1n,
+      );
+      const tx = await this.lucid
+        .newTx()
+        .collectFrom([ownershipUtxo])
+        .collectFrom(
+          [controlUtxo],
+          Data.to(new Constr(0, [BigInt(controlId), BigInt(identityId)])),
+        )
+        .mintAssets({ [identityUnit]: 1n }, Data.empty())
+        .payToContract(
+          this.controlAddress(),
+          Data.to(updatedMap),
+          controlUtxo.assets,
+        )
+        .payToContract(this.gateAddress(), Data.empty(), { [identityUnit]: 1n })
+        .attachMetadataWithConversion(537, {
+          ["0x" + this.identityPolicyId()]: {
+            ["0x" + utf8ToHex(contractDetails.identityPrefix + identityId)]: {
+              ...metadata,
+            },
           },
-        },
-      })
-      .attachSpendingValidator({ type: 'PlutusV1', script: controlValidator })
-      .attachMintingPolicy({ type: 'PlutusV1', script: identityPolicy })
-      .complete();
-    const signedTx = await tx.sign().complete();
-    return await signedTx.submit();
+        })
+        .attachSpendingValidator({ type: "PlutusV1", script: controlValidator })
+        .attachMintingPolicy({ type: "PlutusV1", script: identityPolicy })
+        .complete();
+      const signedTx = await tx.sign().complete();
+      return await signedTx.submit();
+    }
   }
-};
 
-export const getIdentity = async (
-  identityId: number
-): Promise<any | undefined> => {
-  const identityUnit =
-    identityPolicyId() + assetName(contractDetails.identityPrefix + identityId);
-  const txHash = await fetch(
-    `https://cardano-${
-      Lucid.network === 'Mainnet' ? 'mainnet' : 'testnet'
-    }.blockfrost.io/api/v0/assets/${identityUnit}/transactions?order=desc&count=1`,
-    { headers: { project_id: Lucid.provider.projectId } }
-  )
-    .then(res => res.json())
-    .then(res => res[0]?.tx_hash);
-  if (!txHash || txHash.error) return undefined;
+  async getIdentity(identityId: number): Promise<any | undefined> {
+    const identityUnit = this.identityPolicyId() +
+      utf8ToHex(contractDetails.identityPrefix + identityId);
+    const txHash = await fetch(
+      `https://cardano-${
+        this.lucid.network === "Mainnet" ? "mainnet" : "testnet"
+      }.blockfrost.io/api/v0/assets/${identityUnit}/transactions?order=desc&count=1`,
+      { headers: { project_id: (this.lucid.provider as any).projectId } },
+    )
+      .then((res) => res.json())
+      .then((res) => res[0]?.tx_hash);
+    if (!txHash || txHash.error) return undefined;
 
-  const txMetadata = await fetch(
-    `https://cardano-${
-      Lucid.network === 'Mainnet' ? 'mainnet' : 'testnet'
-    }.blockfrost.io/api/v0/txs/${txHash}/metadata`,
-    { headers: { project_id: Lucid.provider.projectId } }
-  ).then(res => res.json());
+    const txMetadata = await fetch(
+      `https://cardano-${
+        this.lucid.network === "Mainnet" ? "mainnet" : "testnet"
+      }.blockfrost.io/api/v0/txs/${txHash}/metadata`,
+      { headers: { project_id: (this.lucid.provider as any).projectId } },
+    ).then((res) => res.json());
 
-  const metadata = (txMetadata || []).find((m: any) => m.label == 537)
-    ?.json_metadata;
+    const metadata = (txMetadata || []).find((m: any) => m.label == 537)
+      ?.json_metadata;
 
-  if (!metadata) return undefined;
+    if (!metadata) return undefined;
 
-  return (
-    metadata?.[identityPolicyId()]?.[
-      assetName(contractDetails.identityPrefix + identityId)
-    ] ||
-    metadata?.['0x' + identityPolicyId()]?.[
-      '0x' + assetName(contractDetails.identityPrefix + identityId)
-    ]
-  );
-};
+    return (
+      metadata?.[this.identityPolicyId()]?.[
+        utf8ToHex(contractDetails.identityPrefix + identityId)
+      ] ||
+      metadata?.["0x" + this.identityPolicyId()]?.[
+        "0x" + utf8ToHex(contractDetails.identityPrefix + identityId)
+      ]
+    );
+  }
+}
 
-export * from 'lucid-cardano';
+export * from "lucid-cardano";

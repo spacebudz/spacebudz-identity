@@ -1,5 +1,5 @@
 {
-  "version": "1.0.4",
+  "version": "1.0.5",
   "license": "MIT",
   "typings": "dist/index.d.ts",
   "files": [
@@ -16,7 +16,7 @@
     "build": "tsdx build --format esm",
     "lint": "tsdx lint src/offchain",
     "build:contract": "cd src/onchain && cabal run contract",
-    "release": "npm run build && npm run lint && npm publish --access public"
+    "release": "npm run build && npm publish --access public"
   },
   "peerDependencies": {},
   "husky": {
@@ -41,6 +41,6 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
-    "lucid-cardano": "^0.2.9"
+    "lucid-cardano": "^0.6.8"
   }
 }
