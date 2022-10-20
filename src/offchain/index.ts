@@ -134,7 +134,7 @@ export class Contract {
         .newTx()
         .collectFrom([ownershipUtxo])
         .collectFrom([gateUtxo], Data.empty())
-        .payToContract(this.gateAddress(), Data.empty(), { [identityUnit]: 1n })
+        .payToContract(this.gateAddress(), Data.empty(), gateUtxo.assets)
         .attachMetadataWithConversion(537, {
           ["0x" + this.identityPolicyId()]: {
             ["0x" + utf8ToHex(contractDetails.identityPrefix + identityId)]: {
